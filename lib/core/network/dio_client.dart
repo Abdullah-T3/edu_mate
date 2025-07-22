@@ -34,7 +34,7 @@ class DioClient implements ApiCalls {
   }
 
   @override
-  Future<Map<String, dynamic>> get(
+  Future<Response> get(
     String url, {
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? header,
@@ -48,7 +48,7 @@ class DioClient implements ApiCalls {
           options: Options(headers: header),
         );
 
-        return _validateResponseData(response);
+        return response;
       } on DioException catch (e) {
         throw DioExceptionHandler.handleError(e);
       }
@@ -58,7 +58,7 @@ class DioClient implements ApiCalls {
   }
 
   @override
-  Future<Map<String, dynamic>> post(
+  Future<Response> post(
     String url, {
     Map<String, dynamic>? body,
     Map<String, dynamic>? header,
@@ -72,7 +72,7 @@ class DioClient implements ApiCalls {
           options: Options(headers: header),
         );
 
-        return _validateResponseData(response);
+        return response;
       } on DioException catch (e) {
         throw DioExceptionHandler.handleError(e);
       }
@@ -82,7 +82,7 @@ class DioClient implements ApiCalls {
   }
 
   @override
-  Future<Map<String, dynamic>> put(
+  Future<Response> put(
     String url,
     Map<String, dynamic>? body, {
     Map<String, dynamic>? header,
@@ -96,7 +96,7 @@ class DioClient implements ApiCalls {
           options: Options(headers: header),
         );
 
-        return _validateResponseData(response);
+        return response;
       } on DioException catch (e) {
         throw DioExceptionHandler.handleError(e);
       }
@@ -106,10 +106,7 @@ class DioClient implements ApiCalls {
   }
 
   @override
-  Future<Map<String, dynamic>> delete(
-    String url, {
-    Map<String, dynamic>? header,
-  }) async {
+  Future<Response> delete(String url, {Map<String, dynamic>? header}) async {
     final isConnected = await ConnectivityHelper.isConnected();
     if (isConnected) {
       try {
@@ -118,7 +115,7 @@ class DioClient implements ApiCalls {
           options: Options(headers: header, method: 'DELETE'),
         );
 
-        return _validateResponseData(response);
+        return response;
       } on DioException catch (e) {
         throw DioExceptionHandler.handleError(e);
       }
@@ -127,22 +124,22 @@ class DioClient implements ApiCalls {
     }
   }
 
-  Map<String, dynamic> _validateResponseData(Response response) {
-    if (response.statusCode == 204 ||
-        response.statusCode == 201 ||
-        response.statusCode == 200) {
-      if (response.data == null || response.data.toString().isEmpty) {
-        return {'statusCode': response.statusCode};
-      }
-    }
-    if (response.data is Map<String, dynamic>) {
-      return response.data;
-    } else if (response.data != null) {
-      return {'data': response.data};
-    } else {
-      throw Exception(
-        'Invalid response format: Expected Map<String, dynamic>, but got ${response.runtimeType}',
-      );
-    }
-  }
+  // Map<String, dynamic> _validateResponseData(Response response) {
+  //   if (response.statusCode == 204 ||
+  //       response.statusCode == 201 ||
+  //       response.statusCode == 200) {
+  //     if (response.data == null || response.data.toString().isEmpty) {
+  //       return {'statusCode': response.statusCode};
+  //     }
+  //   }
+  //   if (response.data is Map<String, dynamic>) {
+  //     return response.data;
+  //   } else if (response.data != null) {
+  //     return {'data': response.data};
+  //   } else {
+  //     throw Exception(
+  //       'Invalid response format: Expected Map<String, dynamic>, but got ${response.runtimeType}',
+  //     );
+  //   }
+  // }
 }

@@ -1,6 +1,12 @@
+import 'package:dio/dio.dart';
+
 abstract class ApiCalls {
-  Future<Map<String, dynamic>> get(String endpoint, {Map<String, dynamic>? queryParameters, Map<String, dynamic>? header});
-  Future<Map<String, dynamic>> post(String endpoint, {Map<String, dynamic> body});
-  Future<Map<String, dynamic>> put(String endpoint, Map<String, dynamic> body);
-  Future<Map<String, dynamic>> delete(String endpoint);
+  Future<Response> get(
+    String endpoint, {
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? header,
+  });
+  Future<Response> post(String endpoint, {Map<String, dynamic> body});
+  Future<Response> put(String endpoint, Map<String, dynamic> body);
+  Future<Response> delete(String endpoint);
 }

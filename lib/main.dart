@@ -1,4 +1,7 @@
+import 'package:edu_mate/core/di/injection.dart';
 import 'package:edu_mate/core/theme/app_theme.dart';
+import 'package:edu_mate/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:edu_mate/core/routing/appRouting.dart';
@@ -6,7 +9,8 @@ import 'package:edu_mate/core/theme/logic/theme_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await di.init(); // Initialize dependencies
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  configureDependencies();
   runApp(const MyApp());
 }
 

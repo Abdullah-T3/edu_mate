@@ -36,13 +36,19 @@ class AuthTextFormField extends StatelessWidget {
         Text(label, style: textTheme.bodyMedium),
         const SizedBox(height: 6),
         TextFormField(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: controller,
           obscureText: obscureText,
           keyboardType: keyboardType,
           validator: validator,
           onChanged: onChanged,
+          cursorColor: Theme.of(context).extension<AppColors>()!.primary,
+          onTapOutside: (_) {
+            FocusScope.of(context).unfocus();
+          },
           decoration: InputDecoration(
             labelText: hintText,
+
             prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
             contentPadding: EdgeInsets.symmetric(
               horizontal: deviceinfo.screenWidth * 0.02,

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:edu_mate/core/Responsive/UiComponents/InfoWidget.dart';
 import 'package:edu_mate/core/Responsive/models/DeviceInfo.dart';
-import 'package:edu_mate/core/helper/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:edu_mate/core/routing/routs.dart';
 import 'package:go_router/go_router.dart';

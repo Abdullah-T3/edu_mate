@@ -7,11 +7,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:edu_mate/core/routing/appRouting.dart';
 import 'package:edu_mate/core/theme/logic/theme_cubit.dart';
 
+import 'features/auth/presentation/cubit/auth_cubit.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   configureDependencies();
-  runApp(const MyApp());
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<ThemeCubit>(create: (context) => ThemeCubit()),
+        BlocProvider<AuthCubit>(create: (context) => getIt<AuthCubit>()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -19,20 +29,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ThemeCubit(),
-      child: BlocBuilder<ThemeCubit, ThemeMode>(
-        builder: (context, themeMode) {
-          return MaterialApp.router(
-            title: 'Edu-Mate',
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: themeMode,
-            debugShowCheckedModeBanner: false,
-            routerConfig: AppRouter.router,
-          );
-        },
-      ),
+    return BlocBuilder<ThemeCubit, ThemeMode>(
+      builder: (context, themeMode) {
+        return MaterialApp.router(
+          title: 'Edu-Mate',
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: themeMode,
+          debugShowCheckedModeBanner: false,
+          routerConfig: AppRouter.router,
+        );
+      },
     );
   }
 }

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:edu_mate/features/auth/data/datasources/auth_data_source.dart';
 import 'package:edu_mate/features/auth/data/repositories/auth_reposirory.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: AuthReposirory)
@@ -22,16 +23,17 @@ class AuthRepositoryImpl implements AuthReposirory {
   }
 
   @override
-  Future<void> login(String username, String password) async {
+  Future<User> login(String email, String password) async {
     try {
-      if (username.isEmpty || password.isEmpty) {
+      if (email.isEmpty || password.isEmpty) {
         throw Exception("Username and password cannot be empty");
-      } else if (username.length < 3 || password.length < 6) {
+      } else if (email.length < 3 || password.length < 6) {
         throw Exception(
           "Username must be at least 3 characters and password at least 6 characters",
         );
       } else {
-        await _authDataSource.login(username, password);
+        final response = await _authDataSource.login(email, password);
+        return response!.user!;
       }
     } catch (error) {
       log("Login failed: $error");
@@ -47,16 +49,31 @@ class AuthRepositoryImpl implements AuthReposirory {
   }
 
   @override
-  Future<void> register(String username, String password) async {
+  Future<User> register(String email, String password, String fullName) async {
     try {
-      if (username.isEmpty || password.isEmpty) {
+      if (email.isEmpty || password.isEmpty) {
         throw Exception("Username and password cannot be empty");
-      } else if (username.length < 3 || password.length < 6) {
+      } else if (email.length < 3 || password.length < 6) {
         throw Exception(
           "Username must be at least 3 characters and password at least 6 characters",
         );
+      } else if (!RegExp(
+        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+      ).hasMatch(email)) {
+        throw Exception("Invalid email format");
+      } else if (fullName.isEmpty) {
+        throw Exception("Full name cannot be empty");
       } else {
-        await _authDataSource.register(username, password);
+        final response = await _authDataSource.register(
+          email,
+          password,
+          fullName,
+        );
+        if (response.user == null) {
+          throw Exception("Registration failed, please try again");
+        }
+
+        return response.user!;
       }
     } catch (error) {
       log("Registration failed: $error");

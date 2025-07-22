@@ -6,7 +6,11 @@ abstract class AuthDataSource {
   Future<UserCredential?> login(String email, String password);
 
   /// Registers a new user with the provided [email] and [password].
-  Future<UserCredential> register(String email, String password);
+  Future<UserCredential> register(
+    String email,
+    String password,
+    String fullName,
+  );
 
   /// Logs out the current user.
   Future<void> logout();

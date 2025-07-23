@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:edu_mate/core/Responsive/UiComponents/InfoWidget.dart';
 import 'package:edu_mate/core/Responsive/models/DeviceInfo.dart';
 import 'package:edu_mate/core/theme/app_theme.dart';
-import 'package:edu_mate/features/courses/presentation/pages/my_courses_standalone_screen.dart';
+import 'package:edu_mate/features/courses/presentation/pages/my_courses_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:edu_mate/features/auth/presentation/pages/profile_screen.dart';

@@ -1,6 +1,7 @@
 import 'package:edu_mate/core/Responsive/UiComponents/InfoWidget.dart';
 import 'package:edu_mate/core/Responsive/models/DeviceInfo.dart';
 import 'package:edu_mate/core/helper/cherryToast/CherryToastMsgs.dart';
+import 'package:edu_mate/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -26,11 +27,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    print(
-      'Initializing course details screen for course: ${widget.course.title}',
-    );
-    print('Video URL: ${widget.course.video}');
-    // Delay initialization to ensure widget is fully built
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeYoutubePlayer();
     });
@@ -44,13 +41,11 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
 
   String? _extractVideoId(String url) {
     try {
-      // Try the package's method first
       final videoId = YoutubePlayer.convertUrlToId(url);
       if (videoId != null && videoId.isNotEmpty) {
         return videoId;
       }
 
-      // Fallback: manual extraction
       final uri = Uri.parse(url);
       if (uri.host.contains('youtube.com') || uri.host.contains('youtu.be')) {
         if (uri.host.contains('youtu.be')) {
@@ -104,8 +99,10 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<AppColors>()!;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
+      backgroundColor: colors.scaffoldBackground,
       body: SafeArea(
         child: InfoWidget(
           builder: (context, deviceinfo) => Column(
@@ -157,18 +154,18 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
             onPressed: () => context.pop(),
             icon: const Icon(Icons.arrow_back, color: Colors.white),
           ),
-          const Expanded(
+          Expanded(
             child: Text(
               'Course Details',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 18,
+                fontSize: deviceinfo.screenWidth * 0.05,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          SizedBox(width: 48),
+          SizedBox(width: deviceinfo.screenWidth * 0.05),
         ],
       ),
     );
@@ -180,8 +177,8 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
         _youtubePlayerController != null &&
         _isVideoPlaying) {
       return Container(
-        margin: const EdgeInsets.all(20),
-        height: 200,
+        margin: EdgeInsets.all(deviceinfo.screenWidth * 0.05),
+        height: deviceinfo.screenHeight * 0.3,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
           child: Builder(
@@ -190,10 +187,16 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                 return YoutubePlayer(
                   controller: _youtubePlayerController!,
                   showVideoProgressIndicator: true,
-                  progressIndicatorColor: const Color(0xFF6A85F1),
-                  progressColors: const ProgressBarColors(
-                    playedColor: Color(0xFF6A85F1),
-                    handleColor: Color(0xFF6A85F1),
+                  progressIndicatorColor: Theme.of(
+                    context,
+                  ).extension<AppColors>()!.primary,
+                  progressColors: ProgressBarColors(
+                    playedColor: Theme.of(
+                      context,
+                    ).extension<AppColors>()!.primary,
+                    handleColor: Theme.of(
+                      context,
+                    ).extension<AppColors>()!.primary,
                   ),
                   onEnded: (YoutubeMetaData metaData) {
                     setState(() {
@@ -206,7 +209,6 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                 );
               } catch (e) {
                 print('Error creating YouTube player widget: $e');
-                // Fallback to URL launcher
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   setState(() {
                     _isVideoPlaying = false;
@@ -217,9 +219,20 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                 return Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    color: Colors.grey[300],
+                    color: Theme.of(
+                      context,
+                    ).extension<AppColors>()!.cardBackground,
                   ),
-                  child: const Center(child: Text('Loading video...')),
+                  child: Center(
+                    child: Text(
+                      'Loading video...',
+                      style: TextStyle(
+                        color: Theme.of(
+                          context,
+                        ).extension<AppColors>()!.primaryText,
+                      ),
+                    ),
+                  ),
                 );
               }
             },
@@ -228,17 +241,15 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
       );
     }
 
-    // Show video preview with play button
     return Container(
       margin: const EdgeInsets.all(20),
-      height: 200,
+      height: deviceinfo.screenHeight * 0.3,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(deviceinfo.screenWidth * 0.04),
         gradient: _getCourseGradient(widget.course.category),
       ),
       child: Stack(
         children: [
-          // Background image or placeholder
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
@@ -252,15 +263,15 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                   ? null
                   : () => _handleVideoPlay(deviceinfo),
               child: Container(
-                width: 80,
-                height: 80,
+                width: deviceinfo.screenWidth * 0.2,
+                height: deviceinfo.screenWidth * 0.2,
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.9),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.2),
-                      blurRadius: 10,
+                      blurRadius: deviceinfo.screenWidth * 0.02,
                       offset: const Offset(0, 4),
                     ),
                   ],
@@ -269,18 +280,20 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                     ? Skeletonizer(
                         enabled: true,
                         child: Container(
-                          width: 40,
-                          height: 40,
+                          width: deviceinfo.screenWidth * 0.2,
+                          height: deviceinfo.screenWidth * 0.2,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(
+                              deviceinfo.screenWidth * 0.1,
+                            ),
                           ),
                         ),
                       )
                     : Icon(
                         Icons.play_arrow,
                         color: _getGradientColors(widget.course.category).first,
-                        size: 40,
+                        size: deviceinfo.screenWidth * 0.1,
                       ),
               ),
             ),
@@ -288,13 +301,13 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
           // Video title overlay
           if (widget.course.video.isNotEmpty)
             Positioned(
-              bottom: 16,
-              left: 16,
-              right: 16,
+              bottom: deviceinfo.screenHeight * 0.02,
+              left: deviceinfo.screenWidth * 0.05,
+              right: deviceinfo.screenWidth * 0.05,
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
+                padding: EdgeInsets.symmetric(
+                  horizontal: deviceinfo.screenWidth * 0.02,
+                  vertical: deviceinfo.screenHeight * 0.01,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.7),
@@ -304,9 +317,9 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                   _youtubePlayerAvailable
                       ? 'Tap to watch video'
                       : 'Tap to watch on YouTube',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 14,
+                    fontSize: deviceinfo.screenWidth * 0.04,
                     fontWeight: FontWeight.w600,
                   ),
                   textAlign: TextAlign.center,
@@ -381,11 +394,13 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
   }
 
   Widget _buildCourseInfoCard(BuildContext context, Deviceinfo deviceinfo) {
+    final colors = Theme.of(context).extension<AppColors>()!;
+
     return Container(
       margin: EdgeInsets.symmetric(horizontal: deviceinfo.screenWidth * 0.05),
       padding: EdgeInsets.all(deviceinfo.screenWidth * 0.05),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.cardBackground,
         borderRadius: BorderRadius.circular(deviceinfo.screenWidth * 0.04),
         boxShadow: [
           BoxShadow(
@@ -403,7 +418,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
             style: TextStyle(
               fontSize: deviceinfo.screenWidth * 0.05,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1F2937),
+              color: colors.primaryText,
             ),
           ),
           SizedBox(height: deviceinfo.screenHeight * 0.01),
@@ -441,6 +456,8 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
     Color iconColor,
     Deviceinfo deviceinfo,
   ) {
+    final colors = Theme.of(context).extension<AppColors>()!;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -451,7 +468,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
           style: TextStyle(
             fontSize: deviceinfo.screenWidth * 0.03,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF6B7280),
+            color: colors.secondaryText,
           ),
         ),
       ],
@@ -459,11 +476,13 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
   }
 
   Widget _buildInstructorSection(BuildContext context, Deviceinfo deviceinfo) {
+    final colors = Theme.of(context).extension<AppColors>()!;
+
     return Container(
       margin: EdgeInsets.symmetric(horizontal: deviceinfo.screenWidth * 0.05),
       padding: EdgeInsets.all(deviceinfo.screenWidth * 0.05),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.cardBackground,
         borderRadius: BorderRadius.circular(deviceinfo.screenWidth * 0.04),
         boxShadow: [
           BoxShadow(
@@ -477,7 +496,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
         children: [
           CircleAvatar(
             radius: deviceinfo.screenWidth * 0.08,
-            backgroundColor: const Color(0xFF6A85F1),
+            backgroundColor: colors.primary,
             child: Text(
               widget.course.instructor.name.substring(0, 1).toUpperCase(),
               style: TextStyle(
@@ -497,13 +516,16 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                   style: TextStyle(
                     fontSize: deviceinfo.screenWidth * 0.05,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1F2937),
+                    color: colors.primaryText,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   widget.course.instructor.title,
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                  style: TextStyle(
+                    fontSize: deviceinfo.screenWidth * 0.04,
+                    color: colors.secondaryText,
+                  ),
                 ),
               ],
             ),
@@ -514,11 +536,13 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
   }
 
   Widget _buildAboutCourseSection(BuildContext context, Deviceinfo deviceinfo) {
+    final colors = Theme.of(context).extension<AppColors>()!;
+
     return Container(
       margin: EdgeInsets.symmetric(horizontal: deviceinfo.screenWidth * 0.05),
       padding: EdgeInsets.all(deviceinfo.screenWidth * 0.05),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.cardBackground,
         borderRadius: BorderRadius.circular(deviceinfo.screenWidth * 0.04),
         boxShadow: [
           BoxShadow(
@@ -536,7 +560,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
             style: TextStyle(
               fontSize: deviceinfo.screenWidth * 0.05,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1F2937),
+              color: colors.primaryText,
             ),
           ),
           SizedBox(height: deviceinfo.screenHeight * 0.01),
@@ -544,32 +568,8 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
             widget.course.description,
             style: TextStyle(
               fontSize: deviceinfo.screenWidth * 0.04,
-              color: Colors.grey[700],
-              height: 1.5,
-            ),
-          ),
-          SizedBox(height: deviceinfo.screenHeight * 0.02),
-          ElevatedButton.icon(
-            onPressed: () => _openVideoOnYouTube(deviceinfo),
-            icon: const Icon(Icons.play_arrow, color: Colors.white),
-            label: const Text(
-              'Watch Video on YouTube',
-              style: TextStyle(color: Colors.white),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFEF4444),
-              minimumSize: Size(
-                deviceinfo.screenWidth * 0.8,
-                deviceinfo.screenHeight * 0.06,
-              ),
-              padding: EdgeInsets.symmetric(
-                vertical: deviceinfo.screenHeight * 0.01,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  deviceinfo.screenWidth * 0.04,
-                ),
-              ),
+              color: colors.secondaryText,
+              height: deviceinfo.screenHeight * 0.0013,
             ),
           ),
         ],
@@ -581,18 +581,19 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
     BuildContext context,
     Deviceinfo deviceinfo,
   ) {
+    final colors = Theme.of(context).extension<AppColors>()!;
     final lessons = widget.course.courseContent.toList();
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.symmetric(horizontal: deviceinfo.screenWidth * 0.05),
+      padding: EdgeInsets.all(deviceinfo.screenWidth * 0.05),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        color: colors.cardBackground,
+        borderRadius: BorderRadius.circular(deviceinfo.screenWidth * 0.04),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
-            blurRadius: 20,
+            blurRadius: deviceinfo.screenWidth * 0.05,
             offset: const Offset(0, 4),
           ),
         ],
@@ -605,51 +606,61 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
             style: TextStyle(
               fontSize: deviceinfo.screenWidth * 0.05,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1F2937),
+              color: colors.primaryText,
             ),
           ),
           SizedBox(height: deviceinfo.screenHeight * 0.01),
           ...lessons.asMap().entries.map((entry) {
             int lessonNumber = entry.key + 1;
             String title = entry.value;
-            return _buildLessonItem(lessonNumber, title);
+            return _buildLessonItem(lessonNumber, title, deviceinfo);
           }),
         ],
       ),
     );
   }
 
-  Widget _buildLessonItem(int lessonNumber, String title) {
+  Widget _buildLessonItem(
+    int lessonNumber,
+    String title,
+    Deviceinfo deviceinfo,
+  ) {
+    final colors = Theme.of(context).extension<AppColors>()!;
+
     return Container(
-      margin: EdgeInsets.only(bottom: 16),
+      margin: EdgeInsets.only(bottom: deviceinfo.screenHeight * 0.01),
       child: Row(
         children: [
           Container(
-            width: 40,
-            height: 40,
+            width: deviceinfo.screenWidth * 0.1,
+            height: deviceinfo.screenWidth * 0.1,
             decoration: BoxDecoration(
-              color: const Color(0xFF6A85F1),
+              color: colors.primary,
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.play_arrow, color: Colors.white, size: 20),
+            child: Icon(
+              Icons.play_arrow,
+              color: Colors.white,
+              size: deviceinfo.screenWidth * 0.05,
+            ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: deviceinfo.screenWidth * 0.02),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Lesson $lessonNumber: $title',
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: TextStyle(
+                    fontSize: deviceinfo.screenWidth * 0.04,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF1F2937),
+                    color: colors.primaryText,
                   ),
                 ),
               ],
             ),
           ),
-          Icon(Icons.chevron_right, color: Colors.grey[400]),
+          Icon(Icons.chevron_right, color: colors.tertiaryText),
         ],
       ),
     );

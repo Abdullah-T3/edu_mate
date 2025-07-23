@@ -11,7 +11,7 @@ import '../../features/courses/presentation/cubit/enrolled_courses_cubit.dart';
 import '../../features/courses/presentation/cubit/search_cubit.dart';
 import '../../features/courses/presentation/pages/home_screen.dart';
 import '../../features/courses/presentation/pages/course_details_screen.dart';
-import '../../features/courses/presentation/pages/my_courses_standalone_screen.dart';
+import '../../features/courses/presentation/pages/my_courses_screen.dart';
 import '../../features/splash/presentation/pages/splash_screen.dart';
 
 class AppRouter {
@@ -20,29 +20,28 @@ class AppRouter {
     redirect: (context, state) {
       final authCubit = getIt<AuthCubit>();
 
-      // Don't redirect if we're already on the splash screen
       if (state.matchedLocation == Routes.splashScreen) {
         return null;
       }
-
-      // Check authentication status
-      if (authCubit.state is Authenticated) {
-        // If authenticated and trying to access login/register, redirect to home
-        if (state.matchedLocation == Routes.loginScreen ||
-            state.matchedLocation == Routes.registerScreen) {
-          return Routes.homeScreen;
-        }
-        return null;
-      } else if (authCubit.state is Unauthenticated ||
-          authCubit.state is AuthError) {
-        // If not authenticated and trying to access protected routes, redirect to login
-        if (state.matchedLocation == Routes.homeScreen) {
+      if (authCubit.state is Unauthenticated || authCubit.state is AuthError) {
+        if (state.matchedLocation == Routes.homeScreen ||
+            state.matchedLocation == Routes.courseDetailsScreen ||
+            state.matchedLocation == Routes.enrolledCoursesScreen ||
+            state.matchedLocation == Routes.profileScreen) {
           return Routes.loginScreen;
         }
         return null;
       }
 
-      // For AuthInitial and AuthLoading states, let the splash screen handle navigation
+      if (authCubit.state is Authenticated) {
+        if (state.matchedLocation == Routes.loginScreen ||
+            state.matchedLocation == Routes.registerScreen ||
+            state.matchedLocation == Routes.splashScreen) {
+          return Routes.homeScreen;
+        }
+        return null;
+      }
+
       return null;
     },
     routes: [

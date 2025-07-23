@@ -1,4 +1,5 @@
 import 'package:edu_mate/core/Responsive/models/DeviceInfo.dart';
+import 'package:edu_mate/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import '../../data/models/courses_model.dart';
 import 'course_card.dart';
@@ -56,38 +57,50 @@ class _CourseListState extends State<CourseList> {
   }
 
   Widget _buildSectionTitle() {
-    return Text(
-      widget.isSearching ? 'Search Results' : 'Featured Courses',
-      style: const TextStyle(
-        fontSize: 22,
-        fontWeight: FontWeight.bold,
-        color: Color(0xFF374151),
-      ),
+    return Builder(
+      builder: (context) {
+        final appColors = Theme.of(context).extension<AppColors>()!;
+        
+        return Text(
+          widget.isSearching ? 'Search Results' : 'Featured Courses',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: appColors.primaryText,
+          ),
+        );
+      },
     );
   }
 
   Widget _buildNoResultsWidget() {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.search_off, size: 64, color: Color(0xFF9CA3AF)),
-          SizedBox(height: 16),
-          Text(
-            'No courses found',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Color(0xFF6B7280),
-            ),
+    return Builder(
+      builder: (context) {
+        final appColors = Theme.of(context).extension<AppColors>()!;
+        
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.search_off, size: 64, color: appColors.tertiaryText),
+              const SizedBox(height: 16),
+              Text(
+                'No courses found',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: appColors.secondaryText,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Try adjusting your search terms',
+                style: TextStyle(fontSize: 14, color: appColors.tertiaryText),
+              ),
+            ],
           ),
-          SizedBox(height: 8),
-          Text(
-            'Try adjusting your search terms',
-            style: TextStyle(fontSize: 14, color: Color(0xFF9CA3AF)),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -113,10 +113,13 @@ class _MyCoursesScreenState extends State<MyCoursesScreen>
         indicatorWeight: 3,
         labelColor: appColors.primary,
         unselectedLabelColor: appColors.tertiaryText,
-        labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-        unselectedLabelStyle: const TextStyle(
+        labelStyle: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: deviceinfo.screenWidth * 0.02,
+        ),
+        unselectedLabelStyle: TextStyle(
           fontWeight: FontWeight.w500,
-          fontSize: 14,
+          fontSize: deviceinfo.screenWidth * 0.02,
         ),
         tabs: const [
           Tab(text: 'All Courses'),
@@ -137,22 +140,29 @@ class _MyCoursesScreenState extends State<MyCoursesScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.error_outline, size: 64, color: appColors.error),
-                const SizedBox(height: 16),
+                Icon(
+                  Icons.error_outline,
+                  size: deviceinfo.screenWidth * 0.1,
+                  color: appColors.error,
+                ),
+                SizedBox(height: deviceinfo.screenHeight * 0.02),
                 Text(
                   'Error loading courses',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: deviceinfo.screenWidth * 0.04,
                     fontWeight: FontWeight.w600,
                     color: appColors.secondaryText,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: deviceinfo.screenHeight * 0.01),
                 Text(
                   state.message,
-                  style: TextStyle(fontSize: 14, color: appColors.tertiaryText),
+                  style: TextStyle(
+                    fontSize: deviceinfo.screenWidth * 0.035,
+                    color: appColors.tertiaryText,
+                  ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: deviceinfo.screenHeight * 0.02),
                 ElevatedButton(
                   onPressed: () {
                     context.read<EnrolledCoursesCubit>().fetchEnrolledCourses();

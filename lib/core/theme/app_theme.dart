@@ -91,6 +91,19 @@ class AppTheme {
     error: const Color(0xFFEF4444),
   );
 
+  static final AppColors _darkColors = AppColors(
+    primary: const Color(0xFF6A85F1),
+    accent: const Color(0xFF7F53AC),
+    scaffoldBackground: const Color(0xFF121212),
+    cardBackground: const Color(0xFF1E1E1E),
+    inputBackground: const Color(0xFF2A2A2A),
+    primaryText: Colors.white,
+    secondaryText: Colors.grey[300]!,
+    tertiaryText: Colors.grey[400]!,
+    divider: Colors.grey[700]!,
+    error: const Color(0xFFEF4444),
+  );
+
   static ThemeData get lightTheme {
     return ThemeData(
       brightness: Brightness.light,
@@ -152,6 +165,64 @@ class AppTheme {
     );
   }
 
-  // You can add a dark theme later
-  static ThemeData get darkTheme => lightTheme; // Placeholder
+  static ThemeData get darkTheme {
+    return ThemeData(
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: _darkColors.scaffoldBackground,
+      extensions: <ThemeExtension<dynamic>>[_darkColors],
+      textTheme: TextTheme(
+        headlineMedium: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: _darkColors.primaryText,
+        ),
+        titleMedium: TextStyle(color: _darkColors.secondaryText),
+        bodyMedium: TextStyle(
+          fontWeight: FontWeight.w600,
+          color: _darkColors.primaryText,
+        ),
+        labelMedium: TextStyle(
+          color: _darkColors.primary,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+
+      dialogTheme: DialogThemeData(
+        backgroundColor: _darkColors.cardBackground,
+        titleTextStyle: TextStyle(
+          color: _darkColors.primaryText,
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+        contentTextStyle: TextStyle(
+          color: _darkColors.secondaryText,
+          fontSize: 16,
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: _darkColors.inputBackground,
+        prefixIconColor: _darkColors.tertiaryText,
+        labelStyle: TextStyle(color: _darkColors.secondaryText),
+        hintStyle: TextStyle(color: Colors.grey[500]),
+        floatingLabelBehavior: FloatingLabelBehavior.auto,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          ),
+          padding: WidgetStateProperty.all(EdgeInsets.zero),
+          elevation: WidgetStateProperty.all(0),
+          backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+            return Colors.transparent;
+          }),
+          shadowColor: WidgetStateProperty.all(Colors.transparent),
+        ),
+      ),
+      dividerTheme: DividerThemeData(
+        color: _darkColors.divider,
+        thickness: 1.0,
+      ),
+    );
+  }
 }

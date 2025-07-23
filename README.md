@@ -162,7 +162,7 @@ lib/
 - **Material Design 3**: Modern design principles
 - **Responsive Layout**: Adaptive design for all screen sizes
 - **Accessibility**: WCAG compliant design elements
-
+- **Custom Theme**: Light and dark mode support with dynamic color schemes and user preference persistence
 ### Interactive Elements
 - **Gradient Buttons**: Beautiful gradient-styled action buttons
 - **Skeleton Loading**: Smooth loading animations
@@ -181,6 +181,10 @@ The app uses Firebase configuration files for authentication:
 - **Target Platforms**: Android, iOS
 - **Architecture**: Clean Architecture with BLoC pattern
 
+### Development Tools
+- **Hot Reload**: Fast development with Flutter's hot reload feature
+- **Debug Mode**: Enhanced debugging capabilities
+
 ## 📊 Project Structure
 
 ```
@@ -189,7 +193,18 @@ edu_mate/
 ├── ios/                    # iOS platform files
 ├── lib/                    # Main application code
 │   ├── core/              # Core functionality
+│   │   ├── di/            # Dependency injection
+│   │   ├── error/         # Error handling
+│   │   ├── helper/        # Utility helpers
+│   │   ├── network/       # Network layer
+│   │   ├── Responsive/    # Responsive design utilities
+│   │   ├── routing/       # App routing
+│   │   ├── theme/         # Theme management
+│   │   └── widgets/       # Shared widgets
 │   ├── features/          # Feature modules
+│   │   ├── auth/          # Authentication feature
+│   │   ├── courses/       # Courses feature
+│   │   └── splash/        # Splash screen
 │   └── main.dart          # App entry point
 ├── test/                  # Test files
 ├── pubspec.yaml           # Dependencies

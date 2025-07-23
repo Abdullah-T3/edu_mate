@@ -1,5 +1,6 @@
 import 'package:edu_mate/core/Responsive/UiComponents/InfoWidget.dart';
 import 'package:edu_mate/core/Responsive/models/DeviceInfo.dart';
+import 'package:edu_mate/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/routing/routs.dart';
@@ -13,6 +14,8 @@ class CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appColors = Theme.of(context).extension<AppColors>()!;
+
     return RepaintBoundary(
       child: GestureDetector(
         onTap: () {
@@ -22,13 +25,13 @@ class CourseCard extends StatelessWidget {
           builder: (context, deviceinfo) => Container(
             margin: EdgeInsets.only(bottom: deviceinfo.screenHeight * 0.02),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: appColors.cardBackground,
               borderRadius: BorderRadius.circular(
                 deviceinfo.screenWidth * 0.02,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Color(0x14000000),
+                  color: Colors.black.withOpacity(0.1),
                   blurRadius: deviceinfo.screenWidth * 0.02,
                   offset: Offset(0, 4),
                 ),
@@ -84,29 +87,35 @@ class CourseCard extends StatelessWidget {
                         },
                   )
                 : _buildGradientHeader(),
-            // Category badge
+            // Category badge - show for both image and gradient
             Positioned(
               top: deviceinfo.screenHeight * 0.01,
               right: deviceinfo.screenWidth * 0.02,
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: deviceinfo.screenWidth * 0.02,
-                  vertical: deviceinfo.screenHeight * 0.005,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0x33FFFFFF), // Using const color
-                  borderRadius: BorderRadius.circular(
-                    deviceinfo.screenWidth * 0.02,
-                  ),
-                ),
-                child: Text(
-                  course.category,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+              child: Builder(
+                builder: (context) {
+                  final appColors = Theme.of(context).extension<AppColors>()!;
+
+                  return Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: deviceinfo.screenWidth * 0.02,
+                      vertical: deviceinfo.screenHeight * 0.005,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(
+                        deviceinfo.screenWidth * 0.02,
+                      ),
+                    ),
+                    child: Text(
+                      course.category,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             // Play button overlay
@@ -138,95 +147,78 @@ class CourseCard extends StatelessWidget {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
         gradient: _getCourseGradient(course.category),
       ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: 16,
-            right: 16,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: const Color(0x33FFFFFF), // Using const color
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                course.category,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+      child: Center(
+        child: Container(
+          width: 60,
+          height: 60,
+          decoration: const BoxDecoration(
+            color: Color(0xE6FFFFFF), // Using const color
+            shape: BoxShape.circle,
           ),
-          Center(
-            child: Container(
-              width: 60,
-              height: 60,
-              decoration: const BoxDecoration(
-                color: Color(0xE6FFFFFF), // Using const color
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.play_arrow,
-                color: _getGradientColors(course.category).first,
-                size: 30,
-              ),
-            ),
+          child: Icon(
+            Icons.play_arrow,
+            color: _getGradientColors(course.category).first,
+            size: 30,
           ),
-        ],
+        ),
       ),
     );
   }
 
   Widget _buildCourseDetails() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            course.title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1F2937),
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 12),
-          Row(
+    return Builder(
+      builder: (context) {
+        final appColors = Theme.of(context).extension<AppColors>()!;
+
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(
-                Icons.attach_money,
-                size: 16,
-                color: Color(0xFF6B7280),
-              ),
-              const SizedBox(width: 4),
-              const Text(
-                'Free',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF10B981),
-                ),
-              ),
-              const Spacer(),
-              const Icon(Icons.star, size: 16, color: Color(0xFFFFD700)),
-              const SizedBox(width: 4),
               Text(
-                course.rating.toStringAsFixed(1),
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF374151),
+                course.title,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: appColors.primaryText,
                 ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(
+                    Icons.attach_money,
+                    size: 16,
+                    color: appColors.secondaryText,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Free',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF10B981),
+                    ),
+                  ),
+                  const Spacer(),
+                  const Icon(Icons.star, size: 16, color: Color(0xFFFFD700)),
+                  const SizedBox(width: 4),
+                  Text(
+                    course.rating.toStringAsFixed(1),
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: appColors.primaryText,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

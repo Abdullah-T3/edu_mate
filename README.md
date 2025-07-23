@@ -47,10 +47,11 @@ EduMate is a modern, feature-rich educational learning platform built with Flutt
 - **My Courses**: Dedicated section for enrolled courses
 - **Profile Management**: Easy access to user profile and settings
 
-## 🏗️ Architecture
+## 🏗️ Architecture & Project Structure
 
-EduMate follows Clean Architecture principles with a well-organized folder structure:
+EduMate follows Clean Architecture principles with a well-organized folder structure and robust state management:
 
+### 📁 Project Structure
 ```
 lib/
 ├── core/                    # Core functionality
@@ -185,31 +186,7 @@ The app uses Firebase configuration files for authentication:
 - **Hot Reload**: Fast development with Flutter's hot reload feature
 - **Debug Mode**: Enhanced debugging capabilities
 
-## 📊 Project Structure
 
-```
-edu_mate/
-├── android/                 # Android platform files
-├── ios/                    # iOS platform files
-├── lib/                    # Main application code
-│   ├── core/              # Core functionality
-│   │   ├── di/            # Dependency injection
-│   │   ├── error/         # Error handling
-│   │   ├── helper/        # Utility helpers
-│   │   ├── network/       # Network layer
-│   │   ├── Responsive/    # Responsive design utilities
-│   │   ├── routing/       # App routing
-│   │   ├── theme/         # Theme management
-│   │   └── widgets/       # Shared widgets
-│   ├── features/          # Feature modules
-│   │   ├── auth/          # Authentication feature
-│   │   ├── courses/       # Courses feature
-│   │   └── splash/        # Splash screen
-│   └── main.dart          # App entry point
-├── test/                  # Test files
-├── pubspec.yaml           # Dependencies
-└── README.md             # This file
-```
 
 ## 🤝 Contributing
 

@@ -229,14 +229,11 @@ edu_mate/
 ## 📞 Support
 
 For support and questions:
-- Create an issue in the GitHub repository
-- Contact the development team
-- Check the documentation for common issues
-
+-eng.abdullahahmed59@gmail.com
+-+201095770459
 ---
 
 <div align="center">
   <p>Made with ❤️ using Flutter</p>
-  <p>EduMate - Empowering Education Through Technology</p>
 </div>
 

@@ -1,8 +1,10 @@
 import 'package:bloc/bloc.dart';
+import 'package:edu_mate/features/courses/data/models/courses_model.dart'
+    show Course;
 import 'package:meta/meta.dart';
 import 'package:injectable/injectable.dart';
-import 'package:edu_mate/features/courses/data/repository/course_repository.dart';
-import 'package:edu_mate/features/courses/data/models/courses_model.dart';
+
+import '../../data/repository/course_repository.dart';
 
 part 'courses_state.dart';
 

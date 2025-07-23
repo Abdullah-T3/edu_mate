@@ -1,7 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:injectable/injectable.dart';
-import 'package:edu_mate/features/courses/data/models/courses_model.dart';
+
+import '../../data/models/courses_model.dart';
 
 part 'search_state.dart';
 
@@ -40,9 +41,13 @@ class SearchCubit extends Cubit<SearchState> {
   }
 
   void setSearching(bool isSearching) {
-    if (isSearching) {
+    if (isSearching && state is SearchInitial) {
       emit(SearchActive());
-    } else {
+    } else if (!isSearching &&
+        (state is SearchActive ||
+            state is SearchLoading ||
+            state is SearchResults ||
+            state is SearchNoResults)) {
       emit(SearchInitial());
     }
   }

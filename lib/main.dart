@@ -8,8 +8,6 @@ import 'package:edu_mate/core/routing/appRouting.dart';
 import 'package:edu_mate/core/theme/logic/theme_cubit.dart';
 
 import 'features/auth/presentation/cubit/auth_cubit.dart';
-import 'features/courses/presentation/cubit/courses_cubit.dart';
-import 'features/courses/presentation/cubit/search_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,8 +18,6 @@ void main() async {
       providers: [
         BlocProvider<ThemeCubit>(create: (context) => ThemeCubit()),
         BlocProvider<AuthCubit>(create: (context) => getIt<AuthCubit>()),
-        BlocProvider<CoursesCubit>(create: (context) => getIt<CoursesCubit>()),
-        BlocProvider<SearchCubit>(create: (context) => getIt<SearchCubit>()),
       ],
       child: MyApp(),
     ),

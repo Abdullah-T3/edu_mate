@@ -1,8 +1,8 @@
 import 'package:edu_mate/core/network/dio_client.dart';
-import 'package:edu_mate/features/courses/data/repository/course_repository.dart';
-import 'package:edu_mate/features/courses/data/repository/course_repositrory_impl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
+
+import '../../features/courses/data/repository/course_repositrory_impl.dart';
 
 @module
 abstract class RegisterModule {
@@ -14,5 +14,5 @@ abstract class RegisterModule {
   FirebaseAuth get firebaseAuth => FirebaseAuth.instance;
 
   @lazySingleton
-  CourseRepository courseRepository(CourseRepositroryImpl impl) => impl;
+  CourseRepositroryImpl courseRepository(CourseRepositroryImpl impl) => impl;
 }

@@ -9,4 +9,5 @@ class Routes {
   static const String editProfileScreen = '/editProfileScreen';
   static const String restPasswordScreen = '/restPasswordScreen';
   static const String otpExpiredScreen = '/otpExpiredScreen';
+  static const String courseDetailsScreen = '/courseDetailsScreen';
 }

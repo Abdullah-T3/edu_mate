@@ -12,6 +12,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.secondaryText,
     required this.tertiaryText,
     required this.divider,
+    required this.error,
   });
 
   final Color primary;
@@ -23,6 +24,7 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color secondaryText;
   final Color tertiaryText;
   final Color divider;
+  final Color error;
 
   @override
   AppColors copyWith({
@@ -35,6 +37,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? secondaryText,
     Color? tertiaryText,
     Color? divider,
+    Color? error,
   }) {
     return AppColors(
       primary: primary ?? this.primary,
@@ -46,6 +49,7 @@ class AppColors extends ThemeExtension<AppColors> {
       secondaryText: secondaryText ?? this.secondaryText,
       tertiaryText: tertiaryText ?? this.tertiaryText,
       divider: divider ?? this.divider,
+      error: error ?? this.error,
     );
   }
 
@@ -68,6 +72,7 @@ class AppColors extends ThemeExtension<AppColors> {
       secondaryText: Color.lerp(secondaryText, other.secondaryText, t)!,
       tertiaryText: Color.lerp(tertiaryText, other.tertiaryText, t)!,
       divider: Color.lerp(divider, other.divider, t)!,
+      error: Color.lerp(error, other.error, t)!,
     );
   }
 }
@@ -83,6 +88,7 @@ class AppTheme {
     secondaryText: Colors.grey[700]!,
     tertiaryText: Colors.grey[600]!,
     divider: Colors.grey[300]!,
+    error: const Color(0xFFEF4444),
   );
 
   static ThemeData get lightTheme {
@@ -103,6 +109,19 @@ class AppTheme {
         labelMedium: TextStyle(
           color: _lightColors.primary,
           fontWeight: FontWeight.w500,
+        ),
+      ),
+
+      dialogTheme: DialogThemeData(
+        backgroundColor: _lightColors.cardBackground,
+        titleTextStyle: TextStyle(
+          color: _lightColors.primaryText,
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+        contentTextStyle: TextStyle(
+          color: _lightColors.secondaryText,
+          fontSize: 16,
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(

@@ -1,3 +1,4 @@
+import 'package:edu_mate/core/Responsive/models/DeviceInfo.dart';
 import 'package:flutter/material.dart';
 import '../../data/models/courses_model.dart';
 import 'course_card.dart';
@@ -6,12 +7,13 @@ class CourseList extends StatefulWidget {
   final List<Course> courses;
   final bool isSearching;
   final VoidCallback onRefresh;
-
+  final Deviceinfo deviceInfo;
   const CourseList({
     super.key,
     required this.courses,
     required this.isSearching,
     required this.onRefresh,
+    required this.deviceInfo,
   });
 
   @override
@@ -48,7 +50,12 @@ class _CourseListState extends State<CourseList> with TickerProviderStateMixin {
       child: widget.courses.isEmpty && widget.isSearching
           ? _buildNoResultsWidget()
           : ListView(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
+              padding: EdgeInsets.fromLTRB(
+                widget.deviceInfo.screenWidth * 0.05,
+                widget.deviceInfo.screenHeight * 0.02,
+                widget.deviceInfo.screenWidth * 0.05,
+                16,
+              ),
               children: [
                 _buildSectionTitle(),
                 const SizedBox(height: 20),

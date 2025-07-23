@@ -26,6 +26,7 @@ class _CourseHeaderState extends State<CourseHeader>
   late Animation<double> _animation;
   AnimationController? _searchAnimationController;
   Animation<double>? _searchAnimation;
+  final FocusNode _searchFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -69,6 +70,7 @@ class _CourseHeaderState extends State<CourseHeader>
   void dispose() {
     _animationController.dispose();
     _searchAnimationController?.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -83,17 +85,21 @@ class _CourseHeaderState extends State<CourseHeader>
             opacity: _animation.value,
             child: InfoWidget(
               builder: (context, deviceinfo) => Container(
-                width: deviceinfo.screenWidth * 0.8,
+                width: double.infinity,
                 padding: EdgeInsets.symmetric(
                   horizontal: deviceinfo.screenWidth * 0.05,
-                  vertical: deviceinfo.screenHeight * 0.02,
+                  vertical: deviceinfo.screenHeight * 0.015,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.white,
+                  borderRadius: BorderRadius.circular(
+                    deviceinfo.screenWidth * 0.02,
+                  ),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
+                      blurRadius: deviceinfo.screenWidth * 0.02,
+                      spreadRadius: deviceinfo.screenWidth * 0.01,
                       offset: const Offset(0, 2),
                     ),
                   ],
@@ -180,8 +186,15 @@ class _CourseHeaderState extends State<CourseHeader>
         borderRadius: BorderRadius.circular(12),
       ),
       child: TextField(
+        focusNode: _searchFocusNode,
         controller: widget.searchController,
         autofocus: true,
+        onTap: () {
+          // Keep search active when field is tapped
+          if (!widget.isSearching) {
+            widget.onSearchToggle();
+          }
+        },
         decoration: InputDecoration(
           hintText: 'Search courses...',
           hintStyle: TextStyle(color: Colors.grey[500], fontSize: 16),
@@ -194,7 +207,12 @@ class _CourseHeaderState extends State<CourseHeader>
             duration: const Duration(milliseconds: 200),
             child: IconButton(
               key: ValueKey(widget.searchController.text.isEmpty),
-              onPressed: widget.onClearSearch,
+              onPressed: () {
+                widget.searchController.clear();
+                widget.onClearSearch();
+                // Keep focus on the search field after clearing
+                _searchFocusNode.requestFocus();
+              },
               icon: AnimatedRotation(
                 duration: const Duration(milliseconds: 200),
                 turns: widget.searchController.text.isEmpty ? 0 : 0.25,
@@ -208,6 +226,12 @@ class _CourseHeaderState extends State<CourseHeader>
           ),
         ),
         style: const TextStyle(fontSize: 16, color: Color(0xFF1F2937)),
+        onChanged: (value) {
+          // Keep search active while typing
+          if (value.isNotEmpty && !widget.isSearching) {
+            widget.onSearchToggle();
+          }
+        },
       ),
     );
   }

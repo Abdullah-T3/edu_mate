@@ -3,7 +3,7 @@ import 'package:edu_mate/core/Responsive/models/DeviceInfo.dart';
 import 'package:edu_mate/core/helper/cherryToast/CherryToastMsgs.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:injectable/injectable.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../../data/models/courses_model.dart';
@@ -110,32 +110,23 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
         child: InfoWidget(
           builder: (context, deviceinfo) => Column(
             children: [
-              // Header
-              _buildHeader(context),
-
-              // Content
+              _buildHeader(context, deviceinfo),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     spacing: deviceinfo.screenHeight * 0.02,
                     children: [
-                      // Video Player Section
                       _buildVideoSection(context, deviceinfo),
 
                       _buildCourseInfoCard(context, deviceinfo),
 
-                      // Instructor Section
                       _buildInstructorSection(context, deviceinfo),
 
-                      // About Course Section
                       _buildAboutCourseSection(context, deviceinfo),
 
-                      // Course Content Section
                       _buildCourseContentSection(context, deviceinfo),
 
-                      SizedBox(
-                        height: deviceinfo.screenHeight * 0.02,
-                      ), // Spacing at the bottom
+                      SizedBox(height: deviceinfo.screenHeight * 0.02),
                     ],
                   ),
                 ),
@@ -147,14 +138,17 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, Deviceinfo deviceinfo) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(
+      padding: EdgeInsets.symmetric(
+        horizontal: deviceinfo.screenWidth * 0.05,
+        vertical: deviceinfo.screenHeight * 0.02,
+      ),
+      decoration: BoxDecoration(
         color: Color(0xFF6A85F1),
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
+          bottomLeft: Radius.circular(deviceinfo.screenWidth * 0.05),
+          bottomRight: Radius.circular(deviceinfo.screenWidth * 0.05),
         ),
       ),
       child: Row(
@@ -174,7 +168,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 48), // Balance the back button
+          SizedBox(width: 48),
         ],
       ),
     );
@@ -272,9 +266,15 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                   ],
                 ),
                 child: _isVideoLoading
-                    ? const CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          Color(0xFF6A85F1),
+                    ? Skeletonizer(
+                        enabled: true,
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                         ),
                       )
                     : Icon(

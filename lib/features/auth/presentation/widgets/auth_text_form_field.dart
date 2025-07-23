@@ -47,7 +47,8 @@ class AuthTextFormField extends StatelessWidget {
             FocusScope.of(context).unfocus();
           },
           decoration: InputDecoration(
-            labelText: hintText,
+            hintText: hintText,
+            floatingLabelBehavior: FloatingLabelBehavior.never,
 
             prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
             contentPadding: EdgeInsets.symmetric(

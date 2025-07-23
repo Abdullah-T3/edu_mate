@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:edu_mate/core/Responsive/UiComponents/InfoWidget.dart';
 import 'package:edu_mate/core/Responsive/models/DeviceInfo.dart';
 import 'package:edu_mate/core/theme/app_theme.dart';
+import 'package:edu_mate/features/courses/presentation/pages/my_courses_standalone_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:edu_mate/features/auth/presentation/pages/profile_screen.dart';
@@ -10,6 +12,7 @@ import '../cubit/courses_cubit.dart';
 import '../cubit/search_cubit.dart';
 import '../widgets/course_header.dart';
 import '../widgets/course_list.dart';
+import '../widgets/course_skeleton.dart';
 import '../widgets/error_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,45 +22,56 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  late AnimationController _fadeController;
-  late AnimationController _slideController;
+class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   // Search functionality
   final TextEditingController _searchController = TextEditingController();
   List<Course> _allCourses = [];
 
+  // Performance optimization: Memoize navigation items
+  late final List<BottomNavigationBarItem> _navigationItems;
+
+  // Debounced search to improve performance
+  Timer? _searchDebounceTimer;
+
   @override
   void initState() {
     super.initState();
-    _fadeController = AnimationController(
-      duration: const Duration(milliseconds: 600),
-      vsync: this,
-    );
-    _slideController = AnimationController(
-      duration: const Duration(milliseconds: 600),
-      vsync: this,
-    );
-
-    _fadeController.forward();
-    _slideController.forward();
-
-    // Listen to search changes
+    // Listen to search changes with debouncing
     _searchController.addListener(_onSearchChanged);
+
+    // Initialize navigation items once
+    _navigationItems = _buildNavigationItems();
+  }
+
+  List<BottomNavigationBarItem> _buildNavigationItems() {
+    return const [
+      BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Home'),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.book_rounded),
+        label: 'My Courses',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.person_rounded),
+        label: 'Profile',
+      ),
+    ];
   }
 
   @override
   void dispose() {
-    _fadeController.dispose();
-    _slideController.dispose();
     _searchController.dispose();
+    _searchDebounceTimer?.cancel();
     super.dispose();
   }
 
   void _onSearchChanged() {
-    final query = _searchController.text;
-    context.read<SearchCubit>().searchCourses(query, _allCourses);
+    _searchDebounceTimer?.cancel();
+    _searchDebounceTimer = Timer(const Duration(milliseconds: 300), () {
+      final query = _searchController.text;
+      context.read<SearchCubit>().searchCourses(query, _allCourses);
+    });
   }
 
   void _clearSearch() {
@@ -78,6 +92,33 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
+  Widget _buildAppBar(Deviceinfo deviceinfo, AppColors appColors) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: deviceinfo.screenWidth * 0.05),
+      padding: EdgeInsets.symmetric(
+        horizontal: deviceinfo.screenWidth * 0.04,
+        vertical: deviceinfo.screenHeight * 0.015,
+      ),
+      decoration: BoxDecoration(
+        color: appColors.primary,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20),
+        ),
+      ),
+      child: Center(
+        child: Text(
+          'Home',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: deviceinfo.screenWidth * 0.05,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildContent(Deviceinfo deviceinfo) {
     final appColors = Theme.of(context).extension<AppColors>()!;
 
@@ -85,9 +126,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       case 0:
         return _buildHomeContent(deviceinfo, appColors);
       case 1:
-        return _buildMyCoursesContent(deviceinfo);
+        return MyCoursesScreen();
       case 2:
-        return ProfileScreen();
+        return const ProfileScreen();
       default:
         return _buildHomeContent(deviceinfo, appColors);
     }
@@ -96,7 +137,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget _buildHomeContent(Deviceinfo deviceinfo, AppColors appColors) {
     return Column(
       children: [
-        // Header with proper spacing
+        // App Bar
+        _buildAppBar(deviceinfo, appColors),
+        // Search Header
         Padding(
           padding: EdgeInsets.only(
             top: deviceinfo.screenHeight * 0.02,
@@ -122,13 +165,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           child: BlocBuilder<CoursesCubit, CoursesState>(
             builder: (context, coursesState) {
               if (coursesState is CoursesLoading) {
-                return Center(
-                  child: CircularProgressIndicator(color: appColors.primary),
-                );
+                return CourseSkeleton(deviceInfo: deviceinfo);
               } else if (coursesState is CoursesLoaded) {
-                // Update all courses
                 _allCourses = coursesState.courses;
-
                 return BlocBuilder<SearchCubit, SearchState>(
                   builder: (context, searchState) {
                     if (searchState is SearchInitial) {
@@ -142,11 +181,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         deviceInfo: deviceinfo,
                       );
                     } else if (searchState is SearchLoading) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: appColors.primary,
-                        ),
-                      );
+                      return CourseSkeleton(deviceInfo: deviceinfo);
                     } else if (searchState is SearchResults) {
                       return CourseList(
                         courses: searchState.courses,
@@ -158,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       );
                     } else if (searchState is SearchNoResults) {
                       return CourseList(
-                        courses: [],
+                        courses: const [],
                         isSearching: true,
                         onRefresh: () {
                           context.read<CoursesCubit>().fetchCourses();
@@ -194,50 +229,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildMyCoursesContent(Deviceinfo deviceinfo) {
-    return const Center(
-      child: Text(
-        'My Courses',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final appColors = Theme.of(context).extension<AppColors>()!;
 
     return InfoWidget(
-      builder: (context, deviceinfo) => Scaffold(
-        backgroundColor: appColors.scaffoldBackground,
-        body: SafeArea(
-          child: Column(children: [Expanded(child: _buildContent(deviceinfo))]),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          onTap: _onNavigationItemSelected,
-          type: BottomNavigationBarType.shifting,
-          selectedItemColor: appColors.primary,
-          unselectedItemColor: appColors.tertiaryText,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_rounded),
-              label: 'Home',
+      builder: (context, deviceinfo) => RepaintBoundary(
+        child: Scaffold(
+          backgroundColor: appColors.scaffoldBackground,
+          body: SafeArea(
+            child: Column(
+              children: [Expanded(child: _buildContent(deviceinfo))],
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book_rounded),
-              label: 'My Courses',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_rounded),
-              label: 'Profile',
-            ),
-          ],
-          // bottomNavigationBar: BottomNavigation(
-          //   selectedIndex: _selectedIndex,
-          //   onItemSelected: _onNavigationItemSelected,
-          //   deviceinfo: deviceinfo,
-          // ),
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: _selectedIndex,
+            onTap: _onNavigationItemSelected,
+            type: BottomNavigationBarType.shifting,
+            selectedItemColor: appColors.primary,
+            unselectedItemColor: appColors.tertiaryText,
+            items: _navigationItems,
+          ),
         ),
       ),
     );

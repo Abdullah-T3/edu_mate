@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../features/courses/data/repository/course_repositrory_impl.dart';
+import '../../features/courses/data/repository/course_repository.dart';
+import '../../features/courses/presentation/cubit/enrolled_courses_cubit.dart';
 
 @module
 abstract class RegisterModule {
@@ -14,5 +16,5 @@ abstract class RegisterModule {
   FirebaseAuth get firebaseAuth => FirebaseAuth.instance;
 
   @lazySingleton
-  CourseRepositroryImpl courseRepository(CourseRepositroryImpl impl) => impl;
+  CourseRepository courseRepository(CourseRepositroryImpl impl) => impl;
 }

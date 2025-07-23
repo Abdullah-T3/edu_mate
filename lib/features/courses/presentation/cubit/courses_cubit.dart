@@ -17,6 +17,7 @@ class CoursesCubit extends Cubit<CoursesState> {
   Future<void> fetchCourses() async {
     try {
       emit(CoursesLoading());
+      Future.delayed(const Duration(seconds: 5)); // Simulate network delay
       final courses = await _courseRepository.fetchCourses();
       emit(CoursesLoaded(courses));
     } catch (e) {

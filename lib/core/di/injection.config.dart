@@ -21,19 +21,21 @@ import 'package:edu_mate/features/auth/data/repositories/auth_repository_impl.da
     as _i215;
 import 'package:edu_mate/features/auth/presentation/cubit/auth_cubit.dart'
     as _i437;
-
+import 'package:edu_mate/features/courses/data/datasource/courses_remote_datasource.dart'
+    as _i915;
+import 'package:edu_mate/features/courses/data/repository/course_repository.dart'
+    as _i304;
+import 'package:edu_mate/features/courses/data/repository/course_repositrory_impl.dart'
+    as _i130;
+import 'package:edu_mate/features/courses/presentation/cubit/courses_cubit.dart'
+    as _i94;
+import 'package:edu_mate/features/courses/presentation/cubit/enrolled_courses_cubit.dart'
+    as _i79;
+import 'package:edu_mate/features/courses/presentation/cubit/search_cubit.dart'
+    as _i613;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-
-import '../../features/courses/data/datasource/courses_remote_datasource.dart'
-    as _i915;
-import '../../features/courses/data/repository/course_repository.dart' as _i304;
-import '../../features/courses/data/repository/course_repositrory_impl.dart'
-    as _i130
-    show CourseRepositroryImpl;
-import '../../features/courses/presentation/cubit/courses_cubit.dart' as _i94;
-import '../../features/courses/presentation/cubit/search_cubit.dart' as _i613;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -66,6 +68,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i94.CoursesCubit>(
       () => _i94.CoursesCubit(gh<_i304.CourseRepository>()),
+    );
+    gh.factory<_i79.EnrolledCoursesCubit>(
+      () => _i79.EnrolledCoursesCubit(gh<_i304.CourseRepository>()),
     );
     return this;
   }

@@ -36,16 +36,20 @@ class Course {
   });
 
   factory Course.fromJson(Map<String, dynamic> json) => Course(
-    id: json["id"],
-    title: json["title"],
-    description: json["description"],
-    category: json["category"],
-    image: json["image"],
-    video: json["video"],
-    rating: json["rating"]?.toDouble(),
-    instructor: Instructor.fromJson(json["instructor"]),
-    duration: json["duration"],
-    courseContent: List<String>.from(json["course_content"].map((x) => x)),
+    id: json["id"] ?? 0,
+    title: json["title"] ?? "",
+    description: json["description"] ?? "",
+    category: json["category"] ?? "",
+    image: json["image"] ?? "",
+    video: json["video"] ?? "",
+    rating: json["rating"]?.toDouble() ?? 0.0,
+    instructor: json["instructor"] != null
+        ? Instructor.fromJson(json["instructor"])
+        : Instructor(name: "", title: ""),
+    duration: json["duration"] ?? "",
+    courseContent: json["course_content"] != null
+        ? List<String>.from(json["course_content"].map((x) => x))
+        : <String>[],
   );
 
   Map<String, dynamic> toJson() => {
@@ -69,7 +73,7 @@ class Instructor {
   Instructor({required this.name, required this.title});
 
   factory Instructor.fromJson(Map<String, dynamic> json) =>
-      Instructor(name: json["name"], title: json["title"]);
+      Instructor(name: json["name"] ?? "", title: json["title"] ?? "");
 
   Map<String, dynamic> toJson() => {"name": name, "title": title};
 }

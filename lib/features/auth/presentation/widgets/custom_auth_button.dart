@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/Responsive/models/DeviceInfo.dart';
 import '../../../../core/theme/app_theme.dart';
+import 'auth_button_skeleton.dart';
 
 Widget customAuthButton({
   required String text,
@@ -41,7 +42,7 @@ Widget customAuthButton({
           width: deviceinfo.screenWidth * 0.8,
           height: deviceinfo.screenHeight * 0.06,
           child: isLoading
-              ? CircularProgressIndicator()
+              ? AuthButtonSkeleton(deviceinfo: deviceinfo)
               : Text(
                   text,
                   style: textTheme.bodyMedium?.copyWith(

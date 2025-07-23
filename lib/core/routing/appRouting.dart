@@ -7,10 +7,11 @@ import '../../features/auth/presentation/pages/login_screen.dart';
 import '../../features/auth/presentation/pages/register_screen.dart';
 import '../../features/auth/presentation/pages/profile_screen.dart';
 import '../../features/courses/presentation/cubit/courses_cubit.dart';
+import '../../features/courses/presentation/cubit/enrolled_courses_cubit.dart';
 import '../../features/courses/presentation/cubit/search_cubit.dart';
 import '../../features/courses/presentation/pages/home_screen.dart';
 import '../../features/courses/presentation/pages/course_details_screen.dart';
-
+import '../../features/courses/presentation/pages/my_courses_standalone_screen.dart';
 import '../../features/splash/presentation/pages/splash_screen.dart';
 
 class AppRouter {
@@ -80,6 +81,16 @@ class AppRouter {
         builder: (context, state) {
           final course = state.extra as Map<String, dynamic>;
           return CourseDetailsScreen(course: course['course']);
+        },
+      ),
+      GoRoute(
+        path: Routes.enrolledCoursesScreen,
+        builder: (context, state) {
+          return BlocProvider(
+            create: (context) =>
+                getIt<EnrolledCoursesCubit>()..fetchEnrolledCourses(),
+            child: MyCoursesScreen(),
+          );
         },
       ),
     ],

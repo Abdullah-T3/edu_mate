@@ -65,36 +65,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final appColors = Theme.of(context).extension<AppColors>()!;
 
     return Container(
+      margin: EdgeInsets.symmetric(horizontal: deviceinfo.screenWidth * 0.05),
       padding: EdgeInsets.symmetric(
-        horizontal: deviceinfo.screenWidth * 0.05,
-        vertical: deviceinfo.screenHeight * 0.02,
+        horizontal: deviceinfo.screenWidth * 0.04,
+        vertical: deviceinfo.screenHeight * 0.015,
       ),
       decoration: BoxDecoration(
         color: appColors.primary,
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(deviceinfo.screenWidth * 0.05),
-          bottomRight: Radius.circular(deviceinfo.screenWidth * 0.05),
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20),
         ),
       ),
-      child: Row(
+      child: Stack(
         children: [
-          SizedBox(width: deviceinfo.screenWidth * 0.08),
-          Expanded(
+          Center(
             child: Text(
               'Profile',
-              textAlign: TextAlign.center,
               style: TextStyle(
-                color: appColors.cardBackground,
-                fontSize: deviceinfo.screenWidth * 0.06,
-                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontSize: deviceinfo.screenWidth * 0.05,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
-          IconButton(
-            onPressed: () {
-              _showSignOutDialog(context);
-            },
-            icon: Icon(Icons.logout, color: appColors.error),
+          Positioned(
+            right: 0,
+            top: 0,
+            bottom: 0,
+            child: IconButton(
+              onPressed: () {
+                _showSignOutDialog(context);
+              },
+              icon: Icon(Icons.logout, color: Colors.white, size: 24),
+            ),
           ),
         ],
       ),

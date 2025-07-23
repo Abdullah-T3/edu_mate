@@ -10,4 +10,8 @@ class CoursesRemoteDatasource {
   Future<Response> fetchCourses() async {
     return await _dioClient.get('courses');
   }
+
+  Future<Response> fetchEntolledCourses() async {
+    return await _dioClient.get('enrolledCourses');
+  }
 }

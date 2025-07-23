@@ -160,7 +160,6 @@ lib/
 
 ### Design System
 - **Material Design 3**: Modern design principles
-- **Custom Theme**: Light and dark theme support
 - **Responsive Layout**: Adaptive design for all screen sizes
 - **Accessibility**: WCAG compliant design elements
 

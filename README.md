@@ -228,9 +228,10 @@ edu_mate/
 
 ## 📞 Support
 
-For support and questions:
--eng.abdullahahmed59@gmail.com
--+201095770459
+For support or questions, feel free to contact:
+
+- **Email:** eng.abdullahahmed59@gmail.com
+- **Phone:** +20 109 577 0459
 ---
 
 <div align="center">
